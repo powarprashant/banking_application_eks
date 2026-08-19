@@ -65,15 +65,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ===========================================================================
-  # JOB 2 - SONARQUBE
+  # JOB 2 - SONARQUBE & QUALITY GATE
   # ===========================================================================
   sonarqube:
-    name: SonarQube Code Scan
+    name: SonarQube Scan & Quality Gate
     runs-on: ubuntu-latest
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-    continue-on-error: true
 
     steps:
 
@@ -86,14 +85,10 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         if: env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != ''
 
-      # Optional quality gate.
-      # Enable this if your SonarQube server has a quality gate configured.
-
-      - name: SonarQube Quality Gate
+      - name: SonarQube Quality Gate Check
         uses: SonarSource/sonarqube-quality-gate-action@v1
         if: env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != ''
         timeout-minutes: 5
-        continue-on-error: true
 
   # ===========================================================================
   # JOB 3 - OWASP DEPENDENCY CHECK
