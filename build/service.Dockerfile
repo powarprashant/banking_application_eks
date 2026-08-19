@@ -16,18 +16,15 @@ ARG SERVICE
 ENV CGO_ENABLED=0 GOOS=linux
 WORKDIR /src
 
-# Shared modules first (better layer caching), then the service.
-COPY pkg/ ./pkg/
-COPY proto/ ./proto/
-COPY services/${SERVICE}/ ./services/${SERVICE}/
+# Shared modules + workspace definition first, then the service.
+COPY go.work ./
+COPY pkg ./pkg
+COPY proto ./proto
+COPY services/${SERVICE} ./services/${SERVICE}
 
-WORKDIR /src/services/${SERVICE}
-# BuildKit cache mounts share the module + build cache across every service
-# build, so dependencies download once and compilation is incremental.
+# BuildKit cache mounts share module and compilation cache across builds
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
-    go mod download
-RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
-    go build -trimpath -ldflags="-s -w" -o /out/app ./cmd
+    go build -trimpath -ldflags="-s -w" -o /out/app ./services/${SERVICE}/cmd
 
 # ---- runtime stage ----
 FROM gcr.io/distroless/static-debian12:nonroot
