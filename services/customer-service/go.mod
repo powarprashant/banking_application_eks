@@ -1,6 +1,6 @@
 module banking-platform/services/customer-service
 
-go 1.25.7
+go 1.24
 
 require (
 	banking-platform/pkg v0.0.0

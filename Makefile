@@ -6,7 +6,7 @@
 
 SHELL := /bin/bash
 
-GO_IMAGE   ?= golang:1.25-alpine
+GO_IMAGE   ?= golang:1.24-alpine
 CACHE_DIR  ?= $(HOME)/.cache/banking-platform
 MODULES    := pkg templates/service-template
 
