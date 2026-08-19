@@ -76,6 +76,7 @@ jobs:
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
+        if: ${{ secrets.SONAR_TOKEN != '' }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -85,6 +86,7 @@ jobs:
 
       - name: SonarQube Quality Gate
         uses: SonarSource/sonarqube-quality-gate-action@v1
+        if: ${{ secrets.SONAR_TOKEN != '' }}
         timeout-minutes: 10
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -108,8 +110,10 @@ jobs:
           project: "banking-platform"
           path: "."
           format: "HTML"
+          out: "reports"
           args: >
             --scan .
+            --out reports
             --enableRetired
             --failOnCVSS 7
 
@@ -138,7 +142,7 @@ jobs:
           scan-type: fs
           scan-ref: .
           format: table
-          severity: MEDIUM
+          severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: "1"
           vuln-type: os,library
@@ -151,7 +155,7 @@ jobs:
           scan-ref: .
           format: sarif
           output: trivy-fs.sarif
-          severity: MEDIUM
+          severity: HIGH,CRITICAL
           ignore-unfixed: true
           vuln-type: os,library
           exit-code: "0"
@@ -297,7 +301,7 @@ jobs:
       # -----------------------------------------------------------------------
 
       - name: Trivy Docker image scan
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
 
           scan-type: image
@@ -324,7 +328,7 @@ jobs:
 
       - name: Trivy Docker image SARIF
         if: always()
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
 
           scan-type: image

@@ -38,6 +38,8 @@ var routes = map[string]route{
 	"beneficiaries":      {"beneficiary-service", false},
 	"payments":           {"payment-service", false},
 	"wallets":            {"wallet-service", false},
+	"wallet":             {"wallet-service", false},
+	"ledger":             {"ledger-service", false},
 	"loans":              {"loan-service", false},
 	"emi":                {"emi-service", false},
 	"fixed-deposits":     {"fixed-deposit-service", false},
