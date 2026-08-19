@@ -138,7 +138,7 @@ jobs:
           scan-type: fs
           scan-ref: .
           format: table
-          severity: medium
+          severity: MEDIUM
           ignore-unfixed: true
           exit-code: "1"
           vuln-type: os,library
@@ -151,7 +151,7 @@ jobs:
           scan-ref: .
           format: sarif
           output: trivy-fs.sarif
-          severity: medium
+          severity: MEDIUM
           ignore-unfixed: true
           vuln-type: os,library
           exit-code: "0"
