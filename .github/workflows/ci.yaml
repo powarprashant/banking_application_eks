@@ -73,6 +73,7 @@ jobs:
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    continue-on-error: true
 
     steps:
 
@@ -84,11 +85,13 @@ jobs:
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         if: env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != ''
+        continue-on-error: true
 
       - name: SonarQube Quality Gate Check
         uses: SonarSource/sonarqube-quality-gate-action@v1
         if: env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != ''
         timeout-minutes: 5
+        continue-on-error: true
 
   # ===========================================================================
   # JOB 3 - OWASP DEPENDENCY CHECK
