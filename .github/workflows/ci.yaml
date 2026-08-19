@@ -11,7 +11,9 @@ on:
       - "proto/**"
       - "build/**"
       - "deploy/helm/**"
-      - ".github/workflows/ci.yaml"
+      - ".github/workflows/**"
+      - "sonar-project.properties"
+      - "go.work"
 
   pull_request:
     paths:
@@ -21,7 +23,9 @@ on:
       - "proto/**"
       - "build/**"
       - "deploy/helm/**"
-      - ".github/workflows/ci.yaml"
+      - ".github/workflows/**"
+      - "sonar-project.properties"
+      - "go.work"
 
   workflow_dispatch:
 
@@ -110,7 +114,6 @@ jobs:
           project: "banking-platform"
           path: "."
           format: "HTML"
-          out: "reports"
           args: >
             --scan .
             --out reports
