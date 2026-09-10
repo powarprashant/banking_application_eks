@@ -13,7 +13,7 @@ ARG SERVICE
 # ---- build stage ----
 FROM golang:1.25-alpine AS builder
 ARG SERVICE
-ENV CGO_ENABLED=0 GOOS=linux GOFLAGS=-mod=mod
+ENV CGO_ENABLED=0 GOOS=linux
 WORKDIR /src
 
 # Shared modules first (better layer caching), then the service.
