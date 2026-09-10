@@ -9,7 +9,7 @@ spec:
   description: Banking platform
   sourceRepos:
     # Our git repo (chart + argocd manifests + observability values).
-    - "https://github.com/vijaygiduthuri/banking_application_eks.git"
+    - "https://github.com/powarprashant/banking_application_eks.git"
     # Helm chart repos the observability + cert-manager Applications pull from.
     - "https://prometheus-community.github.io/helm-charts"
     - "https://grafana.github.io/helm-charts"
@@ -18,7 +18,7 @@ spec:
     - "https://kubernetes-sigs.github.io/metrics-server/"
     - "https://vmware-tanzu.github.io/helm-charts"
   destinations:
-    - { server: https://kubernetes.default.svc, namespace: banking }
+    - { server: https://kubernetes.default.svc, namespace: bank-app }
     - { server: https://kubernetes.default.svc, namespace: observability }
     - { server: https://kubernetes.default.svc, namespace: cert-manager }
     - { server: https://kubernetes.default.svc, namespace: argocd }

@@ -296,6 +296,7 @@ jobs:
           IMAGE="$REGISTRY/$REPOSITORY"
 
           docker build \
+            --pull \
             -f "$DOCKERFILE" \
             "${BUILD_ARG_FLAGS[@]}" \
             -t "$IMAGE:$IMAGE_TAG" \
@@ -334,7 +335,7 @@ jobs:
       # -----------------------------------------------------------------------
 
       - name: Trivy Docker image SARIF
-        if: success()
+        if: always()
         uses: aquasecurity/trivy-action@v0.36.0
         with:
 
@@ -359,7 +360,7 @@ jobs:
       # -----------------------------------------------------------------------
 
       - name: Upload Trivy image report
-        if: success()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: trivy-${{ matrix.service }}
