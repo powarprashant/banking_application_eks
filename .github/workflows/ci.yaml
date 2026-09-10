@@ -1,4 +1,4 @@
-name: DevSecOps CI/CD - Docker Hub
+name: DevSecOps CI/CD - Amazon ECR
 
 on:
   push:
@@ -37,8 +37,6 @@ permissions:
   contents: read
 
 env:
-  IMAGE_PREFIX: prashantkpowar/banking-platform
-
   # Security gate configuration
   TRIVY_SEVERITY: HIGH,CRITICAL
   TRIVY_IGNORE_UNFIXED: true
@@ -283,12 +281,27 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: ${{ matrix.service }}-${{ steps.vars.outputs.sha }}
+          CONTEXT: ${{ steps.img.outputs.context }}
+          DOCKERFILE: ${{ steps.img.outputs.dockerfile }}
+          BUILDARGS: ${{ steps.img.outputs.buildargs }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$REPOSITORY:latest
+          set -euo pipefail
+
+          BUILD_ARG_FLAGS=()
+          if [ -n "$BUILDARGS" ]; then
+            BUILD_ARG_FLAGS=(--build-arg "$BUILDARGS")
+          fi
+
+          IMAGE="$REGISTRY/$REPOSITORY"
+
+          docker build \
+            -f "$DOCKERFILE" \
+            "${BUILD_ARG_FLAGS[@]}" \
+            -t "$IMAGE:$IMAGE_TAG" \
+            "$CONTEXT"
+
+          docker push "$IMAGE:$IMAGE_TAG"
 
       # -----------------------------------------------------------------------
       # TRIVY DOCKER IMAGE SCAN
@@ -300,7 +313,7 @@ jobs:
 
           scan-type: image
 
-          image-ref: ${{ env.IMAGE_PREFIX }}:${{ matrix.service }}-${{ steps.vars.outputs.sha }}
+          image-ref: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ matrix.service }}-${{ steps.vars.outputs.sha }}
 
           format: table
 
@@ -327,7 +340,7 @@ jobs:
 
           scan-type: image
 
-          image-ref: ${{ env.IMAGE_PREFIX }}:${{ matrix.service }}-${{ steps.vars.outputs.sha }}
+          image-ref: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ matrix.service }}-${{ steps.vars.outputs.sha }}
 
           format: sarif
 
@@ -395,6 +408,21 @@ jobs:
           echo "sha=$(echo "${GITHUB_SHA}" | cut -c1-12)" >> "$GITHUB_OUTPUT"
 
       # -----------------------------------------------------------------------
+      # RESOLVE ECR REGISTRY (must match what the build job pushed)
+      # -----------------------------------------------------------------------
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # -----------------------------------------------------------------------
       # INSTALL YQ
       # -----------------------------------------------------------------------
 
@@ -414,6 +442,7 @@ jobs:
       - name: Update image strings in values.yaml
         env:
           NEW_TAG: ${{ steps.vars.outputs.sha }}
+          IMAGE_REPO: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}
 
         run: |
 
@@ -444,7 +473,7 @@ jobs:
 
             key="$(to_camel "$svc")"
 
-            img="${IMAGE_PREFIX}:${svc}-${NEW_TAG}"
+            img="${IMAGE_REPO}:${svc}-${NEW_TAG}"
 
             echo "Updating ${key} -> ${img}"
 
