@@ -3,7 +3,7 @@
 # Each <service> block drives templates/<service>.yaml (Deployment + Service +
 # ConfigMap + Secret + HPA). CI patches each rebuilt service's `image:` string.
 # =============================================================================
-
+# 
 namespace: bank-app
 imagePullPolicy: IfNotPresent
 env:
@@ -11,6 +11,7 @@ env:
   logLevel: info
   logFormat: json
 # Shared database connection (single DB, per-service table prefixes).
+
 db:
   host: postgres
   port: "5432"
@@ -33,23 +34,27 @@ otel:
   endpoint: "otel-collector.observability.svc.cluster.local:4317"
   insecure: "true"
 # Used only by document-service.
+
 s3:
   enabled: "false"
   region: us-east-1
   bucket: banking-documents
 # DEV DEFAULTS ONLY — override per environment / use a secrets manager.
+
 secrets:
   dbUser: banking
   dbPassword: banking
   jwtSecret: dev-secret-change-me
   jwtIssuer: banking-platform
 # ---------------------------------------------------------------------------
+
 # Backend microservices (each listens on :8080, /healthz /readyz /startupz)
+
 # ---------------------------------------------------------------------------
 authService:
   deploymentname: auth-service-deployment
   servicename: auth-service
-  image: prashantkpowar/banking-platform:auth-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:auth-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   grpcPort: 9090
@@ -59,7 +64,7 @@ authService:
 authzService:
   deploymentname: authz-service-deployment
   servicename: authz-service
-  image: prashantkpowar/banking-platform:authz-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:authz-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   grpcPort: 9090
@@ -69,7 +74,7 @@ authzService:
 customerService:
   deploymentname: customer-service-deployment
   servicename: customer-service
-  image: prashantkpowar/banking-platform:customer-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:customer-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: customer-service-hpa
@@ -78,7 +83,7 @@ customerService:
 profileService:
   deploymentname: profile-service-deployment
   servicename: profile-service
-  image: prashantkpowar/banking-platform:profile-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:profile-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: profile-service-hpa
@@ -87,7 +92,7 @@ profileService:
 kycService:
   deploymentname: kyc-service-deployment
   servicename: kyc-service
-  image: prashantkpowar/banking-platform:kyc-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:kyc-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: kyc-service-hpa
@@ -96,7 +101,7 @@ kycService:
 documentService:
   deploymentname: document-service-deployment
   servicename: document-service
-  image: prashantkpowar/banking-platform:document-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:document-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: document-service-hpa
@@ -105,7 +110,7 @@ documentService:
 ledgerService:
   deploymentname: ledger-service-deployment
   servicename: ledger-service
-  image: prashantkpowar/banking-platform:ledger-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:ledger-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   grpcPort: 9090
@@ -115,7 +120,7 @@ ledgerService:
 accountService:
   deploymentname: account-service-deployment
   servicename: account-service
-  image: prashantkpowar/banking-platform:account-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:account-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   grpcPort: 9090
@@ -125,7 +130,7 @@ accountService:
 transactionService:
   deploymentname: transaction-service-deployment
   servicename: transaction-service
-  image: prashantkpowar/banking-platform:transaction-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:transaction-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: transaction-service-hpa
@@ -134,7 +139,7 @@ transactionService:
 beneficiaryService:
   deploymentname: beneficiary-service-deployment
   servicename: beneficiary-service
-  image: prashantkpowar/banking-platform:beneficiary-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:beneficiary-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: beneficiary-service-hpa
@@ -143,7 +148,7 @@ beneficiaryService:
 paymentService:
   deploymentname: payment-service-deployment
   servicename: payment-service
-  image: prashantkpowar/banking-platform:payment-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:payment-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: payment-service-hpa
@@ -152,7 +157,7 @@ paymentService:
 walletService:
   deploymentname: wallet-service-deployment
   servicename: wallet-service
-  image: prashantkpowar/banking-platform:wallet-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:wallet-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: wallet-service-hpa
@@ -161,7 +166,7 @@ walletService:
 loanService:
   deploymentname: loan-service-deployment
   servicename: loan-service
-  image: prashantkpowar/banking-platform:loan-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:loan-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: loan-service-hpa
@@ -170,7 +175,7 @@ loanService:
 emiService:
   deploymentname: emi-service-deployment
   servicename: emi-service
-  image: prashantkpowar/banking-platform:emi-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:emi-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: emi-service-hpa
@@ -179,7 +184,7 @@ emiService:
 fixedDepositService:
   deploymentname: fixed-deposit-service-deployment
   servicename: fixed-deposit-service
-  image: prashantkpowar/banking-platform:fixed-deposit-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:fixed-deposit-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: fixed-deposit-service-hpa
@@ -188,7 +193,7 @@ fixedDepositService:
 recurringDepositService:
   deploymentname: recurring-deposit-service-deployment
   servicename: recurring-deposit-service
-  image: prashantkpowar/banking-platform:recurring-deposit-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:recurring-deposit-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: recurring-deposit-service-hpa
@@ -197,7 +202,7 @@ recurringDepositService:
 cardService:
   deploymentname: card-service-deployment
   servicename: card-service
-  image: prashantkpowar/banking-platform:card-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:card-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: card-service-hpa
@@ -206,7 +211,7 @@ cardService:
 investmentService:
   deploymentname: investment-service-deployment
   servicename: investment-service
-  image: prashantkpowar/banking-platform:investment-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:investment-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: investment-service-hpa
@@ -215,7 +220,7 @@ investmentService:
 currencyExchangeService:
   deploymentname: currency-exchange-service-deployment
   servicename: currency-exchange-service
-  image: prashantkpowar/banking-platform:currency-exchange-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:currency-exchange-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: currency-exchange-service-hpa
@@ -224,7 +229,7 @@ currencyExchangeService:
 auditService:
   deploymentname: audit-service-deployment
   servicename: audit-service
-  image: prashantkpowar/banking-platform:audit-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:audit-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: audit-service-hpa
@@ -233,7 +238,7 @@ auditService:
 fraudService:
   deploymentname: fraud-service-deployment
   servicename: fraud-service
-  image: prashantkpowar/banking-platform:fraud-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:fraud-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: fraud-service-hpa
@@ -242,7 +247,7 @@ fraudService:
 notificationService:
   deploymentname: notification-service-deployment
   servicename: notification-service
-  image: prashantkpowar/banking-platform:notification-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:notification-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: notification-service-hpa
@@ -251,7 +256,7 @@ notificationService:
 statementService:
   deploymentname: statement-service-deployment
   servicename: statement-service
-  image: prashantkpowar/banking-platform:statement-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:statement-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: statement-service-hpa
@@ -260,7 +265,7 @@ statementService:
 reportsService:
   deploymentname: reports-service-deployment
   servicename: reports-service
-  image: prashantkpowar/banking-platform:reports-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:reports-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: reports-service-hpa
@@ -269,7 +274,7 @@ reportsService:
 analyticsService:
   deploymentname: analytics-service-deployment
   servicename: analytics-service
-  image: prashantkpowar/banking-platform:analytics-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:analytics-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: analytics-service-hpa
@@ -278,7 +283,7 @@ analyticsService:
 searchService:
   deploymentname: search-service-deployment
   servicename: search-service
-  image: prashantkpowar/banking-platform:search-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:search-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: search-service-hpa
@@ -287,7 +292,7 @@ searchService:
 emailService:
   deploymentname: email-service-deployment
   servicename: email-service
-  image: prashantkpowar/banking-platform:email-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:email-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: email-service-hpa
@@ -296,7 +301,7 @@ emailService:
 smsService:
   deploymentname: sms-service-deployment
   servicename: sms-service
-  image: prashantkpowar/banking-platform:sms-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:sms-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: sms-service-hpa
@@ -305,7 +310,7 @@ smsService:
 supportService:
   deploymentname: support-service-deployment
   servicename: support-service
-  image: prashantkpowar/banking-platform:support-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:support-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: support-service-hpa
@@ -314,19 +319,21 @@ supportService:
 adminService:
   deploymentname: admin-service-deployment
   servicename: admin-service
-  image: prashantkpowar/banking-platform:admin-service-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:admin-service-d88c02fd6fd4
   replicas: 1
   port: 8080
   hpa: admin-service-hpa
   minReplicas: 1
   maxReplicas: 5
 # ---------------------------------------------------------------------------
+
 # Edge: API gateway + frontend (exposed via NodePort on kind)
+
 # ---------------------------------------------------------------------------
 apiGateway:
   deploymentname: api-gateway-deployment
   servicename: api-gateway
-  image: prashantkpowar/banking-platform:api-gateway-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:api-gateway-d88c02fd6fd4
   replicas: 1
   port: 8080
   serviceType: NodePort
@@ -338,7 +345,7 @@ apiGateway:
 frontend:
   deploymentname: frontend-deployment
   servicename: frontend
-  image: prashantkpowar/banking-platform:frontend-b92bc9e4b8f6
+  image: 590183819111.dkr.ecr.us-east-1.amazonaws.com/demo-app:frontend-d88c02fd6fd4
   replicas: 1
   port: 8080
   serviceType: NodePort
@@ -347,7 +354,9 @@ frontend:
   minReplicas: 1
   maxReplicas: 4
 # ---------------------------------------------------------------------------
+
 # In-cluster PostgreSQL (Redis/Kafka defined above)
+
 # ---------------------------------------------------------------------------
 postgres:
   name: postgres
@@ -357,8 +366,11 @@ postgres:
   storage: 2Gi
   storageClass: ""
 # ---------------------------------------------------------------------------
+
 # Ingress (Traefik) + TLS (cert-manager) — Phase 11. Disabled by default;
+
 # kind uses the NodePorts above. Set enabled/tls/host for EKS.
+
 # ---------------------------------------------------------------------------
 ingress:
   enabled: true
