@@ -217,6 +217,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Locate Dockerfile
+        run: |
+          pwd
+          ls -la
+          find . -iname 'Dockerfile*' -not -path './.git/*'
+
       # -----------------------------------------------------------------------
       # COMPUTE SHA
       # -----------------------------------------------------------------------
